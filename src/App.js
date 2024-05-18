@@ -15,6 +15,7 @@ function App() {
   const handleSetUser = (userData)=>{
     setUser(userData)
   }
+  
   useEffect(()=>{
     (async()=>{
        try{
@@ -27,7 +28,7 @@ function App() {
     })()
   },[])
   const handleEdit=(data)=>{
-       const Newemployees=employees.filter((ele)=>{
+       const Newemployees=employees.map((ele)=>{
            if(ele._id == data._id){
             return data
            }else{
@@ -47,6 +48,16 @@ function App() {
   const handleAdd=(data)=>{
     setEmployees([...employees,data])
   }
+  // const handelEdit=(val)=>{
+  //   const editemployee=employees.map((ele)=>{
+  //     if(ele._id != val._id){
+  //       return val
+  //     }else{
+  //       return ele
+  //     }
+  //    })
+  //    setEmployees(editemployee)
+  // }
   return (
     <BrowserRouter>
      <div className="App">

@@ -4,11 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 export default function EmployeeEditForm({handleEdit, employees}) {
     const {id}= useParams()
     const navigate=useNavigate()
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [mobile, setMobile] = useState('')
-    const [designation, setDesignation] = useState("")
-    const [gender, setGender] = useState('')
+   const [editEmployee,setEditEmployee]=useState([])
     const [course, setCourse] = useState([])
     const [serverError,setServerError]=useState([])
     const [img, setImg] = useState()
@@ -55,7 +51,7 @@ export default function EmployeeEditForm({handleEdit, employees}) {
             mobile_No: editform. mobile_No,
             designation:  editform.designation,
             gender:  editform.gender,
-            course: course,
+            course: course? course :employees.course,
             img:  editform.img
         }
         console.log("sdfghhgfd",formData)
@@ -66,6 +62,7 @@ export default function EmployeeEditForm({handleEdit, employees}) {
             }
          })
          console.log(response.data)
+         setEditEmployee(response.data)
          handleEdit(response.data)
          navigate('/')
        }catch(err){
@@ -100,12 +97,12 @@ export default function EmployeeEditForm({handleEdit, employees}) {
                 <input type="radio" name="gender" value="female" id="female" onChange={handleInputChange} />
                 <label for="female">Female</label><br />
                 <label>course </label>
-                    <input type="checkbox" name="option1" value="MCA" onChange={handleChange}/>
+                    <input type="checkbox" name="option1" value="MCA" onChange={(e)=>{handleChange(e.target.value)}}/>
                         MCA
-                    <input type="checkbox" name="option2" value="BCA" onChange={handleChange}/>
+                    <input type="checkbox" name="option2" value="BCA" onChange={(e)=>{handleChange(e.target.value)}}/>
                         BCA
                
-                    <input type="checkbox" name="option3" value="BSC" onChange={handleChange}/>
+                    <input type="checkbox" name="option3" value="BSC" onChange={(e)=>{handleChange(e.target.value)}}/>
                        BSC
                <br/>
                 <input type="file" id="img" onChange={handleInputChange}/><br/>
