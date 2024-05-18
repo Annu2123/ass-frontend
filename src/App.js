@@ -1,24 +1,67 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
-
+import Header from './header';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import AdminDashborad from './adminDashboard';
+import Login from './login';
+import Register from './register';
+import EmployeeForm from './employeeForm';
+import axios from 'axios';
+import EmployeeList from './employeeList';
+import EmployeeEditForm from './employeeEdit-form';
 function App() {
+  const[employees,setEmployees]=useState([])
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))|| null)
+  const handleSetUser = (userData)=>{
+    setUser(userData)
+  }
+  useEffect(()=>{
+    (async()=>{
+       try{
+        const response=await axios.get('http://localhost:3004/api/employee/list')
+        console.log(response.data)
+        setEmployees(response.data)
+       }catch(err){
+        console.log(err)
+       }
+    })()
+  },[])
+  const handleEdit=(data)=>{
+       const Newemployees=employees.filter((ele)=>{
+           if(ele._id == data._id){
+            return data
+           }else{
+            return ele
+           }
+       })
+       setEmployees(Newemployees)
+  }
+  const handleDelete=(data)=>{
+     const employee=employees.filter((ele)=>{
+      if(ele._id != data._id){
+        return ele
+      }
+     })
+     setEmployees(employee)
+  }
+  const handleAdd=(data)=>{
+    setEmployees([...employees,data])
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <BrowserRouter>
+     <div className="App">
+      <Header user={user} handleSetUser={handleSetUser}/>
+       <Routes>
+        <Route path='/register' element={<Register/>}/>
+        <Route path='/login' element={<Login handleSetUser={handleSetUser}/>}/>
+         <Route path='/employeeList' element={<EmployeeList handleDelete={handleDelete}  employees={employees}/>}/>
+         <Route path='/employeeForm' element={<EmployeeForm handleAdd={handleAdd}/>}/>
+      <Route path='/' element={<AdminDashborad  employees={employees}  handleDelete={handleDelete}/>}/>
+      <Route path='/employeeEdit/:id' element={<EmployeeEditForm  employees={employees} handleEdit={handleEdit} />}/>
+    </Routes>
     </div>
+    </BrowserRouter>
+   
   );
 }
 
